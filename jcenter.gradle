@@ -1,0 +1,84 @@
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+version = "0.0.1"
+group="me.msile.train.plugin"
+
+def getPropertyFromLocalProperties(key) {
+    File file = project.rootProject.file('local.properties')
+    if (file.exists()) {
+        Properties properties = new Properties()
+        properties.load(file.newDataInputStream())
+        return properties.getProperty(key)
+    }
+}
+
+def hasAndroidPlugin() {
+    return getPlugins().inject(false) { a, b->
+        def classStr = b.getClass().name
+        def isAndroid = ("com.android.build.gradle.LibraryPlugin" == classStr) || ("com.android.build.gradle.AppPlugin" == classStr)
+        a || isAndroid
+    }
+}
+task sourcesJar(type: Jar) {
+    if (hasAndroidPlugin()) {
+        from android.sourceSets.main.java.srcDirs
+        classifier = 'sources'
+    } else {
+        from sourceSets.main.allSource
+        classifier = 'sources'
+    }
+}
+artifacts {
+    archives sourcesJar
+}
+
+def siteUrl = 'https://github.com/msilemsile/HelloGradlePlugin'   // 项目的主页
+def gitUrl = 'git@github.com:msilemsile/HelloGradlePlugin.git'   // Git仓库的url
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'jar'
+                // Add your description here
+                name 'hello first gradle plugin!'     //项目的描述 你可以多写一点
+                url siteUrl
+                // Set your license
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'msilemsile'      //填写的一些基本信息
+                        name 'msilemsile'
+                        email 'msilemsile@gmail.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+
+bintray {
+    user = getPropertyFromLocalProperties("bintray.user")
+    key = getPropertyFromLocalProperties("bintray.apikey")
+    configurations = ['archives']
+    pkg {
+        repo = "maven"
+        name = "HelloPlugin"   //发布到JCenter上的项目名字
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+    }
+}
