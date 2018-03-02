@@ -22,7 +22,7 @@ apply plugin: 'me.msile.train.plugin.HelloPlugin'
 
 HelloPluginExt{
 
-    hello "你妹的。。。。"
+    hello "hello first gradle plugin!"
     
 }
 
@@ -39,5 +39,5 @@ dependencies {
 执行输出
 
 > Task :app:hello
-你妹的。。。。
+hello first gradle plugin!
 
