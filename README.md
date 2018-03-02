@@ -39,5 +39,6 @@ dependencies {
 执行输出
 
 > Task :app:hello
+
 hello first gradle plugin!
 
