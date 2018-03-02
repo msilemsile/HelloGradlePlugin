@@ -35,3 +35,9 @@ dependencies {
 
 
 项目根目录执行>>gradlew hello
+
+执行输出
+
+> Task :app:hello
+你妹的。。。。
+
